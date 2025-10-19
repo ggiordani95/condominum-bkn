@@ -1,9 +1,9 @@
 import { FastifyInstance } from "fastify";
 import authRoutes from "../../modules/auth/http/routes";
 import userRoutes from "../../modules/user/http/routes";
+import visitorRoutes from "../../modules/visitor/http/routes";
 
 export function registerRoutes(app: FastifyInstance): void {
-  // Health check - registrado primeiro, antes de qualquer plugin de autenticação
   app.get(
     "/health",
     {
@@ -34,7 +34,7 @@ export function registerRoutes(app: FastifyInstance): void {
     }
   );
 
-  // Business Routes
   app.register(authRoutes, { prefix: "/auth" });
   app.register(userRoutes, { prefix: "/users" });
+  app.register(visitorRoutes, { prefix: "/visitors" });
 }

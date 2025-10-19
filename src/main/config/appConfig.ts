@@ -22,12 +22,12 @@ export function loadConfig(): AppConfig {
 
 export function validateConfig(config: AppConfig): void {
   if (config.nodeEnv === "production" && config.jwtSecret === "supersecret") {
-    throw new Error("JWT_SECRET must be set in production environment");
+    throw new Error("JWT_SECRET deve ser definido no ambiente de produção");
   }
 
   if (config.port < 1 || config.port > 65535) {
-    throw new Error("PORT must be between 1 and 65535");
+    throw new Error("PORT deve estar entre 1 e 65535");
   }
 
-  console.log(`⚙️  Configuration loaded for ${config.nodeEnv} environment`);
+  console.log(`⚙️  Configuração carregada para o ambiente ${config.nodeEnv}`);
 }

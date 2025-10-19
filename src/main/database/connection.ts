@@ -9,12 +9,10 @@ class DatabaseConnection {
         log: ['query', 'info', 'warn', 'error'],
       });
 
-      // Set up logging for development
       if (process.env.NODE_ENV === "development") {
-        console.log("🗃️  Database logging enabled for development");
+        console.log("🗃️  Log do banco de dados ativado no ambiente de desenvolvimento");
       }
 
-      // Handle application shutdown
       process.on("SIGINT", async () => {
         await this.disconnect();
         process.exit(0);
@@ -34,9 +32,9 @@ class DatabaseConnection {
 
     try {
       await client.$connect();
-      console.log("🗃️  Database connected successfully");
+      console.log("🗃️  Conexão com o banco de dados estabelecida com sucesso");
     } catch (error) {
-      console.error("❌ Database connection failed:", error);
+      console.error("❌ Falha na conexão com o banco de dados:", error);
       throw error;
     }
   }
@@ -45,7 +43,7 @@ class DatabaseConnection {
     if (this.instance) {
       await this.instance.$disconnect();
       this.instance = null;
-      console.log("🗃️  Database disconnected");
+      console.log("🗃️  Conexão com o banco de dados encerrada");
     }
   }
 
@@ -55,7 +53,7 @@ class DatabaseConnection {
       await client.$queryRaw`SELECT 1`;
       return true;
     } catch (error) {
-      console.error("Database health check failed:", error);
+      console.error("Falha no check de saúde do banco de dados:", error);
       return false;
     }
   }

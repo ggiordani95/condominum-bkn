@@ -9,19 +9,18 @@ const start = async () => {
     const host = process.env.HOST || "0.0.0.0";
     const port = Number(process.env.PORT) || 3000;
 
-    // Build server with database initialization
     server = await buildServer();
 
     await server.listen({ host, port });
 
-    console.log(`🚀 Server is running at http://localhost:${port}`);
-    console.log(`📚 Swagger docs available at http://localhost:${port}/docs`);
-    console.log(`💚 Health check at http://localhost:${port}/health`);
+    console.log(`🚀 Servidor está rodando em http://localhost:${port}`);
+    console.log(`📚 Documentação Swagger disponível em http://localhost:${port}/docs`);
+    console.log(`💚 Check de saúde disponível em http://localhost:${port}/health`);
   } catch (err) {
     if (server) {
       server.log.error(err);
     } else {
-      console.error("❌ Server startup failed:", err);
+      console.error("❌ Falha ao iniciar o servidor:", err);
     }
     await DatabaseInitializer.shutdown();
     process.exit(1);
@@ -30,15 +29,15 @@ const start = async () => {
 
 const gracefulShutdown = async (signal: string) => {
   if (server) {
-    server.log.info(`Received ${signal}, shutting down gracefully`);
+    server.log.info(`Recebido ${signal}, encerrando gracefulmente`);
     try {
       await server.close();
-      server.log.info("Server closed successfully");
+      server.log.info("Servidor encerrado com sucesso");
     } catch (err) {
-      server.log.error({ err }, "Error during server shutdown");
+      server.log.error({ err }, "Erro durante o encerramento do servidor");
     }
   } else {
-    console.log(`Received ${signal}, shutting down gracefully`);
+    console.log(`Recebido ${signal}, encerrando gracefulmente`);
   }
 
   // Shutdown database
@@ -51,9 +50,9 @@ process.on("SIGINT", () => gracefulShutdown("SIGINT"));
 
 process.on("uncaughtException", async (err) => {
   if (server) {
-    server.log.fatal(err, "Uncaught exception");
+    server.log.fatal(err, "Exceção não tratada");
   } else {
-    console.error("❌ Uncaught exception:", err);
+    console.error("❌ Exceção não tratada:", err);
   }
   await DatabaseInitializer.shutdown();
   process.exit(1);
@@ -61,9 +60,9 @@ process.on("uncaughtException", async (err) => {
 
 process.on("unhandledRejection", async (reason, promise) => {
   if (server) {
-    server.log.fatal({ reason, promise }, "Unhandled rejection");
+    server.log.fatal({ reason, promise }, "Rejeição não tratada");
   } else {
-    console.error("❌ Unhandled rejection:", { reason, promise });
+    console.error("❌ Rejeição não tratada:", { reason, promise });
   }
   await DatabaseInitializer.shutdown();
   process.exit(1);

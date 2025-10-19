@@ -36,7 +36,8 @@ model User {
   createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  memberships Membership[]
+  memberships      Membership[]
+  residentVisitors ResidentVisitor[]
 
   @@index([email, isActive], name: "idx_users_email_status")
   @@map("users")
@@ -95,4 +96,35 @@ model Unit {
   @@index([locationId], name: "idx_units_location")
   @@index([tenantId], name: "idx_units_tenant")
   @@map("units")
+}
+
+model Visitor {
+  id           String   @id @default(uuid())
+  name         String
+  document     String
+  vehiclePlate String?  @map("vehicle_plate")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  residentVisitors ResidentVisitor[]
+
+  @@index([document], name: "idx_visitors_document")
+  @@map("visitors")
+}
+
+model ResidentVisitor {
+  id         String   @id @default(uuid())
+  residentId String   @map("resident_id")
+  visitorId  String   @map("visitor_id")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  expiresAt  DateTime @map("expires_at") @db.Timestamptz(6)
+
+  resident User    @relation(fields: [residentId], references: [id], onDelete: Cascade)
+  visitor  Visitor @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+
+  @@unique([residentId, visitorId], name: "resident_visitor_unique")
+  @@index([residentId], name: "idx_resident_visitors_resident")
+  @@index([visitorId], name: "idx_resident_visitors_visitor")
+  @@index([expiresAt], name: "idx_resident_visitors_expires")
+  @@map("resident_visitors")
 }

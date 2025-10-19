@@ -232,6 +232,132 @@
       "_type": "request"
     },
     {
+      "_id": "req_visitor_create",
+      "parentId": "fld_visitors",
+      "modified": 1697750000000,
+      "created": 1697750000000,
+      "url": "{{ _.base_url }}/visitors",
+      "name": "Adicionar Visitante",
+      "description": "Cria um novo visitante e vincula ao morador por 24 horas",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"name\": \"João da Silva\",\n\t\"document\": \"12345678900\",\n\t\"vehicle_plate\": \"ABC-1234\",\n\t\"resident_id\": \"{{ _.user_id }}\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697745000000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_visitor_list",
+      "parentId": "fld_visitors",
+      "modified": 1697750000000,
+      "created": 1697750000000,
+      "url": "{{ _.base_url }}/visitors",
+      "name": "Listar Visitantes Ativos",
+      "description": "Lista todos os visitantes ativos do condomínio",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697744000000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_visitor_get_by_id",
+      "parentId": "fld_visitors",
+      "modified": 1697750000000,
+      "created": 1697750000000,
+      "url": "{{ _.base_url }}/visitors/{{ _.visitor_id }}",
+      "name": "Buscar Visitante por ID",
+      "description": "Busca um visitante específico pelo ID",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697743000000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_visitor_update",
+      "parentId": "fld_visitors",
+      "modified": 1697750000000,
+      "created": 1697750000000,
+      "url": "{{ _.base_url }}/visitors/{{ _.visitor_id }}",
+      "name": "Atualizar Visitante",
+      "description": "Atualiza dados de um visitante (nome e placa)",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"name\": \"João da Silva Jr.\",\n\t\"vehicle_plate\": \"XYZ-9988\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697742000000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
       "_id": "fld_auth",
       "parentId": "wrk_main",
       "modified": 1697750000000,
@@ -256,6 +382,18 @@
       "_type": "request_group"
     },
     {
+      "_id": "fld_visitors",
+      "parentId": "wrk_main",
+      "modified": 1697750000000,
+      "created": 1697750000000,
+      "name": "🚶 Visitantes",
+      "description": "Gerenciamento de visitantes do condomínio",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1697748000000,
+      "_type": "request_group"
+    },
+    {
       "_id": "wrk_main",
       "parentId": null,
       "modified": 1697750000000,
@@ -274,13 +412,15 @@
       "data": {
         "base_url": "http://localhost:3000",
         "token": "",
-        "user_id": ""
+        "user_id": "",
+        "visitor_id": ""
       },
       "dataPropertyOrder": {
         "&": [
           "base_url",
           "token",
-          "user_id"
+          "user_id",
+          "visitor_id"
         ]
       },
       "color": null,
@@ -297,13 +437,15 @@
       "data": {
         "base_url": "http://localhost:3000",
         "token": "seu-token-jwt-aqui",
-        "user_id": "id-do-usuario-aqui"
+        "user_id": "id-do-usuario-aqui",
+        "visitor_id": "id-do-visitante-aqui"
       },
       "dataPropertyOrder": {
         "&": [
           "base_url",
           "token",
-          "user_id"
+          "user_id",
+          "visitor_id"
         ]
       },
       "color": "#7d69cb",
@@ -320,13 +462,15 @@
       "data": {
         "base_url": "https://api.seudominio.com",
         "token": "",
-        "user_id": ""
+        "user_id": "",
+        "visitor_id": ""
       },
       "dataPropertyOrder": {
         "&": [
           "base_url",
           "token",
-          "user_id"
+          "user_id",
+          "visitor_id"
         ]
       },
       "color": "#ff6e40",

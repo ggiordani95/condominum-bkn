@@ -1,12 +1,10 @@
 import { bootstrapContainer } from "../../core/container/index";
 
 export function initializeContainer() {
-  // Initialize the modular container
   const container = bootstrapContainer();
 
-  console.log("📦 Dependency injection container initialized");
+  console.log("📦 Container de injeção de dependência inicializado");
 
-  // Validate that critical services are registered
   const criticalServices = [
     "userRepository",
     "tokenService",
@@ -20,7 +18,7 @@ export function initializeContainer() {
     try {
       container.get(service);
     } catch (error) {
-      throw new Error(`Critical service '${service}' not found in container`);
+      throw new Error(`Serviço crítico '${service}' não encontrado no container`);
     }
   }
 
