@@ -1,0 +1,339 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2025-10-19T20:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "req_auth_login",
+      "parentId": "fld_auth",
+      "modified": 1697750000000,
+      "created": 1697750000000,
+      "url": "{{ _.base_url }}/auth/login",
+      "name": "Login",
+      "description": "Realiza login e retorna token JWT",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"email\": \"john@example.com\",\n\t\"password\": \"SecurePass123!\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697750000000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_user_create",
+      "parentId": "fld_users",
+      "modified": 1697750000000,
+      "created": 1697750000000,
+      "url": "{{ _.base_url }}/users",
+      "name": "Criar Usuário (Público)",
+      "description": "Cria um novo usuário no sistema - Rota pública, não requer autenticação",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"name\": \"João Silva\",\n\t\"email\": \"joao@example.com\",\n\t\"password\": \"SenhaSegura123!\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697750000000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_user_list",
+      "parentId": "fld_users",
+      "modified": 1697750000000,
+      "created": 1697750000000,
+      "url": "{{ _.base_url }}/users",
+      "name": "Listar Usuários",
+      "description": "Lista todos os usuários com paginação",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        {
+          "name": "page",
+          "value": "1",
+          "description": "Número da página"
+        },
+        {
+          "name": "limit",
+          "value": "10",
+          "description": "Itens por página"
+        }
+      ],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697749000000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_user_get_by_id",
+      "parentId": "fld_users",
+      "modified": 1697750000000,
+      "created": 1697750000000,
+      "url": "{{ _.base_url }}/users/{{ _.user_id }}",
+      "name": "Buscar Usuário por ID",
+      "description": "Busca um usuário específico pelo ID",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697748000000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_user_update",
+      "parentId": "fld_users",
+      "modified": 1697750000000,
+      "created": 1697750000000,
+      "url": "{{ _.base_url }}/users/{{ _.user_id }}",
+      "name": "Atualizar Usuário",
+      "description": "Atualiza dados de um usuário existente",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"name\": \"João Silva Atualizado\",\n\t\"email\": \"joao.novo@example.com\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697747000000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_user_update_password",
+      "parentId": "fld_users",
+      "modified": 1697750000000,
+      "created": 1697750000000,
+      "url": "{{ _.base_url }}/users/{{ _.user_id }}",
+      "name": "Atualizar Senha",
+      "description": "Atualiza apenas a senha do usuário",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"password\": \"NovaSenhaSegura456!\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697746500000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_user_delete",
+      "parentId": "fld_users",
+      "modified": 1697750000000,
+      "created": 1697750000000,
+      "url": "{{ _.base_url }}/users/{{ _.user_id }}",
+      "name": "Deletar Usuário",
+      "description": "Remove um usuário do sistema",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697746000000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_auth",
+      "parentId": "wrk_main",
+      "modified": 1697750000000,
+      "created": 1697750000000,
+      "name": "🔐 Autenticação",
+      "description": "Endpoints de autenticação",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1697750000000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_users",
+      "parentId": "wrk_main",
+      "modified": 1697750000000,
+      "created": 1697750000000,
+      "name": "👥 Usuários",
+      "description": "CRUD completo de usuários",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1697749000000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "wrk_main",
+      "parentId": null,
+      "modified": 1697750000000,
+      "created": 1697750000000,
+      "name": "Sistema de Gestão de Condomínios",
+      "description": "API REST para gestão de condomínios\n\n**Tecnologias:**\n- Bun + Fastify\n- PostgreSQL + Prisma\n- JWT Authentication\n- Clean Architecture + DDD",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_main",
+      "parentId": "wrk_main",
+      "modified": 1697750000000,
+      "created": 1697750000000,
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:3000",
+        "token": "",
+        "user_id": ""
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "base_url",
+          "token",
+          "user_id"
+        ]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1697750000000,
+      "_type": "environment"
+    },
+    {
+      "_id": "env_dev",
+      "parentId": "env_main",
+      "modified": 1697750000000,
+      "created": 1697750000000,
+      "name": "Development",
+      "data": {
+        "base_url": "http://localhost:3000",
+        "token": "seu-token-jwt-aqui",
+        "user_id": "id-do-usuario-aqui"
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "base_url",
+          "token",
+          "user_id"
+        ]
+      },
+      "color": "#7d69cb",
+      "isPrivate": false,
+      "metaSortKey": 1697750000000,
+      "_type": "environment"
+    },
+    {
+      "_id": "env_prod",
+      "parentId": "env_main",
+      "modified": 1697750000000,
+      "created": 1697750000000,
+      "name": "Production",
+      "data": {
+        "base_url": "https://api.seudominio.com",
+        "token": "",
+        "user_id": ""
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "base_url",
+          "token",
+          "user_id"
+        ]
+      },
+      "color": "#ff6e40",
+      "isPrivate": false,
+      "metaSortKey": 1697751000000,
+      "_type": "environment"
+    }
+  ]
+}
+

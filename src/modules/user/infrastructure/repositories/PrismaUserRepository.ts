@@ -27,7 +27,6 @@ export class PrismaUserRepository implements UserRepository {
 
       let savedUser;
       if (existingUser) {
-        // Update existing user
         savedUser = await this.prisma.user.update({
           where: { id: user.id.value },
           data: {
@@ -39,13 +38,11 @@ export class PrismaUserRepository implements UserRepository {
           },
         });
       } else {
-        // Create new user
         savedUser = await this.prisma.user.create({
           data: userData,
         });
       }
 
-      // Convert back to domain entity
       const domainUser = User.restore(
         {
           name: UserName.create(savedUser.name),

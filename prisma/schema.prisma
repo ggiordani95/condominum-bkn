@@ -1,13 +1,9 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// prisma/schema.prisma
+// Multi-tenant condominium management system schema
 
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
-  runtime = "bun"
 }
 
 datasource db {
@@ -15,15 +11,88 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// User model
-model User {
+model Tenant {
   id        String   @id @default(uuid())
   name      String
-  email     String   @unique
-  password  String
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  subdomain String   @unique
+  status    String   @default("active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
+  memberships Membership[]
+  locations   Location[]
+  units       Unit[]
+
+  @@map("tenants")
+}
+
+model User {
+  id           String    @id
+  email        String    @unique @db.Citext
+  password     String
+  name         String
+  isActive     Boolean   @default(true) @map("is_active")
+  lastLoginAt  DateTime? @map("last_login_at") @db.Timestamptz(6)
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  memberships Membership[]
+
+  @@index([email, isActive], name: "idx_users_email_status")
   @@map("users")
+}
+
+model Membership {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  tenantId  String   @map("tenant_id")
+  role      String
+  isPrimary Boolean  @default(false) @map("is_primary")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, tenantId], name: "memberships_user_id_tenant_id_key")
+  @@index([userId], name: "memberships_primary_once_per_user")
+  @@index([tenantId], name: "idx_memberships_tenant")
+  @@index([userId], name: "idx_memberships_user")
+  @@map("memberships")
+}
+
+model Location {
+  id        String   @id @default(uuid())
+  tenantId  String   @map("tenant_id")
+  name      String
+  kind      String   @default("condo")
+  status    String   @default("active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  units  Unit[]
+
+  @@unique([tenantId, name], name: "locations_tenant_id_name_key")
+  @@index([tenantId], name: "idx_locations_tenant")
+  @@map("locations")
+}
+
+model Unit {
+  id         String   @id @default(uuid())
+  tenantId   String   @map("tenant_id")
+  locationId String   @map("location_id")
+  code       String
+  status     String   @default("active")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  @@unique([locationId, code], name: "units_location_id_code_key")
+  @@unique([tenantId, code], name: "units_tenant_id_code_key")
+  @@index([locationId], name: "idx_units_location")
+  @@index([tenantId], name: "idx_units_tenant")
+  @@map("units")
 }

@@ -1,38 +1,27 @@
 import "dotenv/config";
 import { PrismaClient } from "../../generated/prisma";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { Pool } from "pg";
 
-// Create PostgreSQL connection pool
-const connectionString = process.env.DIRECT_URL!;
-const pool = new Pool({ connectionString });
-
-// Create Prisma adapter
-const adapter = new PrismaPg(pool);
-
-// Create Prisma client with adapter
+// Criar cliente Prisma
 export const prisma = new PrismaClient({
-  adapter,
   log:
     process.env.NODE_ENV === "development"
       ? ["query", "info", "warn", "error"]
       : ["error"],
 });
 
-// Graceful shutdown
+// Desconexão graceful
 export async function disconnectPrisma() {
   await prisma.$disconnect();
-  await pool.end();
 }
 
-// Test connection function
+// Função de teste de conexão
 export async function testConnection() {
   try {
     await prisma.$connect();
-    console.log("✅ Database connected successfully with driver adapter");
+    console.log("✅ Banco de dados conectado com sucesso");
     return true;
   } catch (error) {
-    console.error("❌ Database connection failed:", error);
+    console.error("❌ Falha na conexão com o banco de dados:", error);
     return false;
   }
 }

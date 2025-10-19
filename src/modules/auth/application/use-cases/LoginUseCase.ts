@@ -19,10 +19,10 @@ export class LoginUseCase {
 
   public async execute(dto: LoginDTO): Promise<Result<LoginResponseDTO>> {
     try {
-      // Create email value object
+      // Criar value object de email
       const email = Email.create(dto.email);
 
-      // Find user by email
+      // Buscar usuário por email
       const userResult = await this.userRepository.findByEmail(email);
       if (userResult.isFailure) {
         return failure(userResult.error);
@@ -30,27 +30,27 @@ export class LoginUseCase {
 
       const user = userResult.value;
       if (!user) {
-        return failure(new UnauthorizedError("Invalid credentials"));
+        return failure(new UnauthorizedError("Credenciais inválidas"));
       }
 
-      // Check if user is active
+      // Verificar se usuário está ativo
       if (!user.isValidForLogin()) {
-        return failure(new UnauthorizedError("User is not active"));
+        return failure(new UnauthorizedError("Usuário não está ativo"));
       }
 
-      // Verify password
+      // Verificar senha
       const isPasswordValid = await user.verifyPassword(dto.password);
       if (!isPasswordValid) {
-        return failure(new UnauthorizedError("Invalid credentials"));
+        return failure(new UnauthorizedError("Credenciais inválidas"));
       }
 
-      // Generate token
+      // Gerar token
       const token = await this.tokenService.generateToken(
         user.id.value,
         user.email.value
       );
 
-      // Return response
+      // Retornar resposta
       const response: LoginResponseDTO = {
         token,
         user: {
@@ -67,7 +67,7 @@ export class LoginUseCase {
     } catch (error) {
       return failure(
         new ValidationError(
-          error instanceof Error ? error.message : "Invalid login data"
+          error instanceof Error ? error.message : "Dados de login inválidos"
         )
       );
     }

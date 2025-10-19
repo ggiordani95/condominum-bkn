@@ -16,28 +16,28 @@ export class CreateUserUseCase {
 
   public async execute(dto: CreateUserDTO): Promise<Result<UserResponseDTO>> {
     try {
-      // Create value objects
+      // Criar value objects
       const name = UserName.create(dto.name);
       const email = Email.create(dto.email);
       const password = await HashedPassword.fromPlainText(dto.password);
 
-      // Check email uniqueness using domain service
+      // Verificar unicidade do email usando serviço de domínio
       const emailCheckResult =
         await this.userDomainService.checkEmailUniqueness(email);
       if (emailCheckResult.isFailure) {
         return failure(emailCheckResult.error);
       }
 
-      // Create user entity
+      // Criar entidade de usuário
       const user = User.create(name, email, password);
 
-      // Save user
+      // Salvar usuário
       const saveResult = await this.userRepository.save(user);
       if (saveResult.isFailure) {
         return failure(saveResult.error);
       }
 
-      // Return DTO
+      // Retornar DTO
       const userResponse: UserResponseDTO = {
         id: user.id.value,
         name: user.name.value,
@@ -51,7 +51,7 @@ export class CreateUserUseCase {
     } catch (error) {
       return failure(
         new ValidationError(
-          error instanceof Error ? error.message : "Invalid user data"
+          error instanceof Error ? error.message : "Dados de usuário inválidos"
         )
       );
     }

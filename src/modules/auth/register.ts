@@ -6,7 +6,8 @@ import { UserRepository } from "../user/domain/repositories/UserRepository";
 export function registerAuthModule(container: Container) {
   // Infrastructure services
   const tokenService = new JWTTokenService(
-    process.env.JWT_SECRET || "supersecret"
+    process.env.JWT_SECRET || "supersecret",
+    process.env.JWT_EXPIRES_IN || "24h"
   );
   container.register("tokenService", tokenService);
 

@@ -23,7 +23,7 @@ export class AuthController {
     } catch (error) {
       request.log.error(
         { err: error },
-        "Unhandled error in AuthController.login"
+        "Erro não tratado em AuthController.login"
       );
       HttpErrorHandler.handleInternalError(reply);
     }
@@ -34,11 +34,11 @@ export class AuthController {
     reply: FastifyReply
   ): Promise<void> {
     try {
-      // For now, return not implemented
-      // In a real app, you might want separate registration logic
+      // Por enquanto, retorna não implementado
+      // Em uma aplicação real, você pode querer lógica de registro separada
       reply.code(501).send({
         error: {
-          message: "Registration endpoint not implemented yet",
+          message: "Endpoint de registro não implementado ainda",
           code: "NOT_IMPLEMENTED",
           statusCode: 501,
         },
@@ -46,7 +46,7 @@ export class AuthController {
     } catch (error) {
       request.log.error(
         { err: error },
-        "Unhandled error in AuthController.register"
+        "Erro não tratado em AuthController.register"
       );
       HttpErrorHandler.handleInternalError(reply);
     }

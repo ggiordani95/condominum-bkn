@@ -1,36 +1,35 @@
+import jwt from "jsonwebtoken";
 import { TokenService } from "../../application/use-cases/LoginUseCase";
 
 export class JWTTokenService implements TokenService {
-  constructor(private secret: string) {}
+  constructor(
+    private secret: string,
+    private expiresIn: string = "24h"
+  ) {}
 
   async generateToken(userId: string, email: string): Promise<string> {
     const payload = {
       userId,
       email,
-      iat: Date.now(),
-      exp: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
     };
 
-    return `jwt_${btoa(JSON.stringify(payload))}`;
+    return jwt.sign(payload, this.secret, {
+      expiresIn: this.expiresIn,
+    });
   }
 
   async verifyToken(
     token: string
   ): Promise<{ userId: string; email: string } | null> {
     try {
-      if (!token.startsWith("jwt_")) {
-        return null;
-      }
-
-      const payload = JSON.parse(atob(token.substring(4)));
-
-      if (payload.exp < Date.now()) {
-        return null; // Token expired
-      }
+      const decoded = jwt.verify(token, this.secret) as {
+        userId: string;
+        email: string;
+      };
 
       return {
-        userId: payload.userId,
-        email: payload.email,
+        userId: decoded.userId,
+        email: decoded.email,
       };
     } catch {
       return null;
