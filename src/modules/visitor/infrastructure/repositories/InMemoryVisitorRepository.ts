@@ -7,7 +7,7 @@ import { Result, success, failure } from "../../../../core/shared/Result";
 export class InMemoryVisitorRepository implements VisitorRepository {
   private visitors: Visitor[] = [];
   private residentVisitors: ResidentVisitor[] = [];
-  private residentNames: Map<string, string> = new Map();
+  private residentUnitIds: Map<string, string> = new Map();
 
   async save(visitor: Visitor): Promise<Result<Visitor>> {
     const index = this.visitors.findIndex((v) => v.id.equals(visitor.id));
@@ -35,12 +35,12 @@ export class InMemoryVisitorRepository implements VisitorRepository {
 
     const result: VisitorWithResident[] = activeResidentVisitors.map((rv) => {
       const visitor = this.visitors.find((v) => v.id.equals(rv.visitorId))!;
-      const residentName = this.residentNames.get(rv.residentId.value) || "Unknown";
+      const residentUnitId = this.residentUnitIds.get(rv.residentId.value) || "Unknown";
 
       return {
         visitor,
         residentVisitor: rv,
-        residentName,
+        residentUnitId,
       };
     });
 
@@ -59,12 +59,12 @@ export class InMemoryVisitorRepository implements VisitorRepository {
     }
 
     const visitor = this.visitors.find((v) => v.id.equals(id))!;
-    const residentName = this.residentNames.get(residentVisitor.residentId.value) || "Unknown";
+    const residentUnitId = this.residentUnitIds.get(residentVisitor.residentId.value) || "Unknown";
 
     return success({
       visitor,
       residentVisitor,
-      residentName,
+      residentUnitId,
     });
   }
 
@@ -95,14 +95,14 @@ export class InMemoryVisitorRepository implements VisitorRepository {
     return success(undefined);
   }
 
-  setResidentName(residentId: string, name: string): void {
-    this.residentNames.set(residentId, name);
+  setResidentUnitId(residentId: string, unitId: string): void {
+    this.residentUnitIds.set(residentId, unitId);
   }
 
   clear(): void {
     this.visitors = [];
     this.residentVisitors = [];
-    this.residentNames.clear();
+    this.residentUnitIds.clear();
   }
 }
 

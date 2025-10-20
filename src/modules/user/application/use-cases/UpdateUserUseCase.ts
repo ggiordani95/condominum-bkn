@@ -1,4 +1,4 @@
-// src/modules/user/application/use-cases/UpdateUserUseCase.ts
+
 import { UserRepository } from "../../domain/repositories/UserRepository";
 import { UniqueId } from "../../../../core/shared/value-objects/UniqueId";
 import { Email } from "../../../../core/shared/value-objects/Email";

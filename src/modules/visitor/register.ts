@@ -4,17 +4,17 @@ import { CreateVisitorUseCase } from "./application/use-cases/CreateVisitorUseCa
 import { GetAllVisitorsUseCase } from "./application/use-cases/GetAllVisitorsUseCase";
 import { GetVisitorByIdUseCase } from "./application/use-cases/GetVisitorByIdUseCase";
 import { UpdateVisitorUseCase } from "./application/use-cases/UpdateVisitorUseCase";
-import { UserRepository } from "../user/domain/repositories/UserRepository";
+import { ResidentRepository } from "../resident/domain/repositories/ResidentRepository";
 
 export function registerVisitorModule(container: Container) {
   const visitorRepo = new PrismaVisitorRepository();
   container.register("visitorRepository", visitorRepo);
 
-  const userRepo = container.get<UserRepository>("userRepository");
+  const residentRepo = container.get<ResidentRepository>("residentRepository");
 
   container.register(
     "createVisitorUseCase",
-    new CreateVisitorUseCase(visitorRepo, userRepo)
+    new CreateVisitorUseCase(visitorRepo, residentRepo)
   );
 
   container.register(

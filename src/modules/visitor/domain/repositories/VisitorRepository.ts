@@ -6,7 +6,7 @@ import { Result } from "../../../../core/shared/Result";
 export interface VisitorWithResident {
   visitor: Visitor;
   residentVisitor: ResidentVisitor;
-  residentName: string;
+  residentUnitId: string;
 }
 
 export interface VisitorRepository {

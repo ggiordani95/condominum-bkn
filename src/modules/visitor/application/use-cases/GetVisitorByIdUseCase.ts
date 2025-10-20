@@ -26,7 +26,7 @@ export class GetVisitorByIdUseCase {
         document: item.visitor.document.value,
         vehicle_plate: item.visitor.vehiclePlate?.value || null,
         resident_id: item.residentVisitor.residentId.value,
-        resident_name: item.residentName,
+        resident_unit_id: item.residentUnitId,
         created_at: item.residentVisitor.createdAt,
         expires_at: item.residentVisitor.expiresAt,
       };

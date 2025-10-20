@@ -16,7 +16,7 @@ export interface VisitorResponseDTO {
   document: string;
   vehicle_plate: string | null;
   resident_id: string;
-  resident_name: string;
+  resident_unit_id: string;
   created_at: Date;
   expires_at: Date;
 }
@@ -27,7 +27,7 @@ export interface VisitorListResponseDTO {
   document: string;
   vehicle_plate: string | null;
   resident_id: string;
-  resident_name: string;
+  resident_unit_id: string;
   created_at: Date;
   expires_at: Date;
 }

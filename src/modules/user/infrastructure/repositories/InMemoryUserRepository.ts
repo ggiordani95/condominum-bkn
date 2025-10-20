@@ -6,7 +6,6 @@ import { UniqueId } from "../../../../core/shared/value-objects/UniqueId";
 import { failure, Result, success } from "../../../../core/shared/Result";
 import { Email } from "../../../../core/shared/value-objects/Email";
 
-// In-memory implementation for now
 export class InMemoryUserRepository implements UserRepository {
   private users: Map<string, User> = new Map();
 

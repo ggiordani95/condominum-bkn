@@ -1,34 +1,31 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { CreateVisitorUseCase } from "../CreateVisitorUseCase";
 import { InMemoryVisitorRepository } from "../../../infrastructure/repositories/InMemoryVisitorRepository";
-import { InMemoryUserRepository } from "../../../../user/infrastructure/repositories/InMemoryUserRepository";
+import { InMemoryResidentRepository } from "../../../../resident/infrastructure/repositories/InMemoryResidentRepository";
 import { CreateVisitorDTO } from "../../dtos/VisitorDTOs";
-import { User } from "../../../../user/domain/entities/User";
-import { UserName } from "../../../../user/domain/value-objects/UserName";
-import { Email } from "../../../../../core/shared/value-objects/Email";
-import { HashedPassword } from "../../../../user/domain/value-objects/HashedPassword";
+import { Resident } from "../../../../resident/domain/entities/Resident";
+import { UniqueId } from "../../../../../core/shared/value-objects/UniqueId";
 
 describe("CreateVisitorUseCase", () => {
   let createVisitorUseCase: CreateVisitorUseCase;
   let visitorRepository: InMemoryVisitorRepository;
-  let userRepository: InMemoryUserRepository;
-  let testResident: User;
+  let residentRepository: InMemoryResidentRepository;
+  let testResident: Resident;
 
   beforeEach(async () => {
     visitorRepository = new InMemoryVisitorRepository();
-    userRepository = new InMemoryUserRepository();
+    residentRepository = new InMemoryResidentRepository();
     createVisitorUseCase = new CreateVisitorUseCase(
       visitorRepository,
-      userRepository
+      residentRepository
     );
 
-    const name = UserName.create("João Morador");
-    const email = Email.create("morador@example.com");
-    const password = await HashedPassword.fromPlainText("senha123");
-    testResident = User.create(name, email, password);
-    await userRepository.save(testResident);
+    const userId = UniqueId.create();
+    const unitId = UniqueId.create();
+    testResident = Resident.create(userId, unitId, "owner");
+    await residentRepository.save(testResident);
 
-    visitorRepository.setResidentName(testResident.id.value, testResident.name.value);
+    visitorRepository.setResidentUnitId(testResident.id.value, testResident.unitId.value);
   });
 
   it("deve criar um visitante com sucesso", async () => {
@@ -48,7 +45,7 @@ describe("CreateVisitorUseCase", () => {
         document: "12345678900",
         vehicle_plate: "ABC-1234",
         resident_id: testResident.id.value,
-        resident_name: testResident.name.value,
+        resident_unit_id: testResident.unitId.value,
       });
       expect(result.value.id).toBeDefined();
       expect(result.value.created_at).toBeDefined();

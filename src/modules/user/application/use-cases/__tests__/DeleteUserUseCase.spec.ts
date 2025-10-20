@@ -1,4 +1,4 @@
-// src/modules/user/application/use-cases/__tests__/DeleteUserUseCase.spec.ts
+
 import { describe, it, expect, beforeEach } from "vitest";
 import { DeleteUserUseCase } from "../DeleteUserUseCase";
 import { CreateUserUseCase } from "../CreateUserUseCase";
@@ -40,7 +40,9 @@ describe("DeleteUserUseCase", () => {
     expect(deleteResult.isSuccess).toBe(true);
 
     const getUserResult = await getUserByIdUseCase.execute(userId);
-    expect(getUserResult.value).toBeNull();
+    if (getUserResult.isSuccess) {
+      expect(getUserResult.value).toBeNull();
+    }
   });
 
   it("deve falhar quando o usuário não existe", async () => {

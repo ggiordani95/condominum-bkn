@@ -11,7 +11,6 @@ export class GetUsersUseCase {
     limit: number = 10
   ): Promise<Result<PaginatedUsersDTO>> {
     try {
-      // Validate pagination parameters
       if (page < 1) {
         return failure(new ValidationError("Page must be greater than 0"));
       }
@@ -20,7 +19,6 @@ export class GetUsersUseCase {
         return failure(new ValidationError("Limit must be between 1 and 100"));
       }
 
-      // Get users from repository
       const result = await this.userRepository.findAll(page, limit);
       if (result.isFailure) {
         return failure(result.error);
@@ -28,7 +26,6 @@ export class GetUsersUseCase {
 
       const { users, total } = result.value;
 
-      // Convert to DTOs
       const userDTOs = users.map((user) => ({
         id: user.id.value,
         name: user.name.value,

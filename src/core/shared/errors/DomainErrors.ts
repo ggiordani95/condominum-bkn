@@ -31,3 +31,9 @@ export class UnauthorizedError extends DomainError {
     super(message, details);
   }
 }
+
+export class DatabaseError extends DomainError {
+  constructor(message: string, details?: any) {
+    super(message, details);
+  }
+}

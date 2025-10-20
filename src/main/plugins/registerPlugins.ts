@@ -10,6 +10,7 @@ export function registerPlugins(app: FastifyInstance, config: AppConfig): void {
   app.register(cors, {
     origin:
       config.nodeEnv === "production" ? config.frontendUrl || false : true,
+
   });
 
   // Swagger Plugin

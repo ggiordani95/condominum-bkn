@@ -19,7 +19,8 @@ describe("UpdateVisitorUseCase", () => {
 
   it("deve atualizar o nome do visitante", async () => {
     const residentId = UniqueId.create();
-    visitorRepository.setResidentName(residentId.value, "João Morador");
+    const unitId = UniqueId.create();
+    visitorRepository.setResidentUnitId(residentId.value, unitId.value);
 
     const visitor = Visitor.create(
       VisitorName.create("Nome Original"),
@@ -45,7 +46,8 @@ describe("UpdateVisitorUseCase", () => {
 
   it("deve atualizar a placa do veículo", async () => {
     const residentId = UniqueId.create();
-    visitorRepository.setResidentName(residentId.value, "João Morador");
+    const unitId = UniqueId.create();
+    visitorRepository.setResidentUnitId(residentId.value, unitId.value);
 
     const visitor = Visitor.create(
       VisitorName.create("João Visitante"),
@@ -70,7 +72,8 @@ describe("UpdateVisitorUseCase", () => {
 
   it("deve atualizar nome e placa simultaneamente", async () => {
     const residentId = UniqueId.create();
-    visitorRepository.setResidentName(residentId.value, "João Morador");
+    const unitId = UniqueId.create();
+    visitorRepository.setResidentUnitId(residentId.value, unitId.value);
 
     const visitor = Visitor.create(
       VisitorName.create("Nome Original"),
@@ -96,7 +99,8 @@ describe("UpdateVisitorUseCase", () => {
 
   it("deve manter a placa quando não for enviada no update", async () => {
     const residentId = UniqueId.create();
-    visitorRepository.setResidentName(residentId.value, "João Morador");
+    const unitId = UniqueId.create();
+    visitorRepository.setResidentUnitId(residentId.value, unitId.value);
 
     const visitor = Visitor.create(
       VisitorName.create("João Visitante"),
@@ -134,7 +138,8 @@ describe("UpdateVisitorUseCase", () => {
 
   it("deve falhar quando nome é inválido", async () => {
     const residentId = UniqueId.create();
-    visitorRepository.setResidentName(residentId.value, "João Morador");
+    const unitId = UniqueId.create();
+    visitorRepository.setResidentUnitId(residentId.value, unitId.value);
 
     const visitor = Visitor.create(
       VisitorName.create("João Visitante"),
@@ -158,7 +163,8 @@ describe("UpdateVisitorUseCase", () => {
 
   it("deve falhar quando placa é inválida", async () => {
     const residentId = UniqueId.create();
-    visitorRepository.setResidentName(residentId.value, "João Morador");
+    const unitId = UniqueId.create();
+    visitorRepository.setResidentUnitId(residentId.value, unitId.value);
 
     const visitor = Visitor.create(
       VisitorName.create("João Visitante"),
@@ -182,7 +188,8 @@ describe("UpdateVisitorUseCase", () => {
 
   it("não deve permitir alteração do documento", async () => {
     const residentId = UniqueId.create();
-    visitorRepository.setResidentName(residentId.value, "João Morador");
+    const unitId = UniqueId.create();
+    visitorRepository.setResidentUnitId(residentId.value, unitId.value);
 
     const visitor = Visitor.create(
       VisitorName.create("João Visitante"),

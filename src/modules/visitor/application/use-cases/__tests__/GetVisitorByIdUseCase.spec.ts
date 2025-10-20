@@ -18,8 +18,8 @@ describe("GetVisitorByIdUseCase", () => {
 
   it("deve retornar visitante quando encontrado", async () => {
     const residentId = UniqueId.create();
-    const residentName = "João Morador";
-    visitorRepository.setResidentName(residentId.value, residentName);
+    const unitId = UniqueId.create();
+    visitorRepository.setResidentUnitId(residentId.value, unitId.value);
 
     const visitor = Visitor.create(
       VisitorName.create("João Visitante"),
@@ -38,7 +38,7 @@ describe("GetVisitorByIdUseCase", () => {
       expect(result.value.document).toBe("12345678900");
       expect(result.value.vehicle_plate).toBe("ABC-1234");
       expect(result.value.resident_id).toBe(residentId.value);
-      expect(result.value.resident_name).toBe(residentName);
+      expect(result.value.resident_unit_id).toBe(unitId.value);
     }
   });
 
@@ -53,7 +53,8 @@ describe("GetVisitorByIdUseCase", () => {
 
   it("deve retornar visitante sem placa de veículo", async () => {
     const residentId = UniqueId.create();
-    visitorRepository.setResidentName(residentId.value, "João Morador");
+    const unitId = UniqueId.create();
+    visitorRepository.setResidentUnitId(residentId.value, unitId.value);
 
     const visitor = Visitor.create(
       VisitorName.create("Maria Visitante"),
@@ -73,7 +74,8 @@ describe("GetVisitorByIdUseCase", () => {
 
   it("deve incluir informações de expiração", async () => {
     const residentId = UniqueId.create();
-    visitorRepository.setResidentName(residentId.value, "João Morador");
+    const unitId = UniqueId.create();
+    visitorRepository.setResidentUnitId(residentId.value, unitId.value);
 
     const visitor = Visitor.create(
       VisitorName.create("João Visitante"),
@@ -94,7 +96,8 @@ describe("GetVisitorByIdUseCase", () => {
 
   it("deve retornar null para visitante com vínculo expirado", async () => {
     const residentId = UniqueId.create();
-    visitorRepository.setResidentName(residentId.value, "João Morador");
+    const unitId = UniqueId.create();
+    visitorRepository.setResidentUnitId(residentId.value, unitId.value);
 
     const visitor = Visitor.create(
       VisitorName.create("João Visitante"),

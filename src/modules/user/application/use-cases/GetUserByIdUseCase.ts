@@ -1,4 +1,3 @@
-// src/modules/user/application/use-cases/GetUserByIdUseCase.ts
 import { UserRepository } from "../../domain/repositories/UserRepository";
 import { UniqueId } from "../../../../core/shared/value-objects/UniqueId";
 import { UserResponseDTO } from "../dtos/UserDTOs";

@@ -1,5 +1,5 @@
 import { VisitorRepository } from "../../domain/repositories/VisitorRepository";
-import { UserRepository } from "../../../user/domain/repositories/UserRepository";
+import { ResidentRepository } from "../../../resident/domain/repositories/ResidentRepository";
 import { Visitor } from "../../domain/entities/Visitor";
 import { VisitorName } from "../../domain/value-objects/VisitorName";
 import { Document } from "../../domain/value-objects/Document";
@@ -12,13 +12,13 @@ import { ValidationError } from "../../../../core/shared/errors/DomainErrors";
 export class CreateVisitorUseCase {
   constructor(
     private visitorRepository: VisitorRepository,
-    private userRepository: UserRepository
+    private residentRepository: ResidentRepository
   ) {}
 
   public async execute(dto: CreateVisitorDTO): Promise<Result<VisitorResponseDTO>> {
     try {
       const residentId = UniqueId.create(dto.resident_id);
-      const residentResult = await this.userRepository.findById(residentId);
+      const residentResult = await this.residentRepository.findById(residentId);
       
       if (residentResult.isFailure) {
         return failure(residentResult.error);
@@ -60,7 +60,7 @@ export class CreateVisitorUseCase {
         document: visitor.document.value,
         vehicle_plate: visitor.vehiclePlate?.value || null,
         resident_id: resident.id.value,
-        resident_name: resident.name.value,
+        resident_unit_id: resident.unitId.value,
         created_at: residentVisitor.createdAt,
         expires_at: residentVisitor.expiresAt,
       };

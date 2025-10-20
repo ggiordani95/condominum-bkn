@@ -27,7 +27,8 @@ describe("GetAllVisitorsUseCase", () => {
 
   it("deve retornar todos os visitantes ativos", async () => {
     const residentId = UniqueId.create();
-    visitorRepository.setResidentName(residentId.value, "João Morador");
+    const unitId = UniqueId.create();
+    visitorRepository.setResidentUnitId(residentId.value, unitId.value);
 
     const visitor1 = Visitor.create(
       VisitorName.create("Visitante 1"),
@@ -57,8 +58,8 @@ describe("GetAllVisitorsUseCase", () => {
 
   it("deve incluir informações do morador responsável", async () => {
     const residentId = UniqueId.create();
-    const residentName = "João Morador";
-    visitorRepository.setResidentName(residentId.value, residentName);
+    const unitId = UniqueId.create();
+    visitorRepository.setResidentUnitId(residentId.value, unitId.value);
 
     const visitor = Visitor.create(
       VisitorName.create("João Visitante"),
@@ -72,14 +73,15 @@ describe("GetAllVisitorsUseCase", () => {
 
     expect(result.isSuccess).toBe(true);
     if (result.isSuccess) {
-      expect(result.value[0].resident_name).toBe(residentName);
+      expect(result.value[0].resident_unit_id).toBe(unitId.value);
       expect(result.value[0].resident_id).toBe(residentId.value);
     }
   });
 
   it("deve incluir data de expiração", async () => {
     const residentId = UniqueId.create();
-    visitorRepository.setResidentName(residentId.value, "João Morador");
+    const unitId = UniqueId.create();
+    visitorRepository.setResidentUnitId(residentId.value, unitId.value);
 
     const visitor = Visitor.create(
       VisitorName.create("João Visitante"),
@@ -99,7 +101,8 @@ describe("GetAllVisitorsUseCase", () => {
 
   it("deve ordenar visitantes por data de criação (mais recentes primeiro)", async () => {
     const residentId = UniqueId.create();
-    visitorRepository.setResidentName(residentId.value, "João Morador");
+    const unitId = UniqueId.create();
+    visitorRepository.setResidentUnitId(residentId.value, unitId.value);
 
     const visitor1 = Visitor.create(
       VisitorName.create("Primeiro Visitante"),
