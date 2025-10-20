@@ -5,6 +5,7 @@ import { Visitor } from "../../../domain/entities/Visitor";
 import { VisitorName } from "../../../domain/value-objects/VisitorName";
 import { Document } from "../../../domain/value-objects/Document";
 import { VehiclePlate } from "../../../domain/value-objects/VehiclePlate";
+import { TimeLimit } from "../../../domain/value-objects/TimeLimit";
 import { UniqueId } from "../../../../../core/shared/value-objects/UniqueId";
 
 describe("GetAllVisitorsUseCase", () => {
@@ -36,7 +37,7 @@ describe("GetAllVisitorsUseCase", () => {
       VehiclePlate.create("ABC-1234")
     );
     await visitorRepository.save(visitor1);
-    await visitorRepository.createResidentVisitor(residentId, visitor1.id);
+    await visitorRepository.createResidentVisitor(residentId, visitor1.id, TimeLimit.create("18:00"), 1);
 
     const visitor2 = Visitor.create(
       VisitorName.create("Visitante 2"),
@@ -44,15 +45,15 @@ describe("GetAllVisitorsUseCase", () => {
       null
     );
     await visitorRepository.save(visitor2);
-    await visitorRepository.createResidentVisitor(residentId, visitor2.id);
+    await visitorRepository.createResidentVisitor(residentId, visitor2.id, TimeLimit.create("20:00"), 1);
 
     const result = await getAllVisitorsUseCase.execute();
 
     expect(result.isSuccess).toBe(true);
     if (result.isSuccess) {
       expect(result.value).toHaveLength(2);
-      expect(result.value[0].name).toBe("Visitante 1");
-      expect(result.value[1].name).toBe("Visitante 2");
+      const names = result.value.map(v => v.name).sort();
+      expect(names).toEqual(["Visitante 1", "Visitante 2"]);
     }
   });
 
@@ -67,7 +68,7 @@ describe("GetAllVisitorsUseCase", () => {
       null
     );
     await visitorRepository.save(visitor);
-    await visitorRepository.createResidentVisitor(residentId, visitor.id);
+    await visitorRepository.createResidentVisitor(residentId, visitor.id, TimeLimit.create("19:00"), 1);
 
     const result = await getAllVisitorsUseCase.execute();
 
@@ -89,7 +90,7 @@ describe("GetAllVisitorsUseCase", () => {
       null
     );
     await visitorRepository.save(visitor);
-    const residentVisitor = await visitorRepository.createResidentVisitor(residentId, visitor.id);
+    const residentVisitor = await visitorRepository.createResidentVisitor(residentId, visitor.id, TimeLimit.create("16:00"), 1);
 
     const result = await getAllVisitorsUseCase.execute();
 
@@ -110,7 +111,7 @@ describe("GetAllVisitorsUseCase", () => {
       null
     );
     await visitorRepository.save(visitor1);
-    await visitorRepository.createResidentVisitor(residentId, visitor1.id);
+    await visitorRepository.createResidentVisitor(residentId, visitor1.id, TimeLimit.create("17:00"), 1);
 
     await new Promise(resolve => setTimeout(resolve, 10));
 
@@ -120,7 +121,7 @@ describe("GetAllVisitorsUseCase", () => {
       null
     );
     await visitorRepository.save(visitor2);
-    await visitorRepository.createResidentVisitor(residentId, visitor2.id);
+    await visitorRepository.createResidentVisitor(residentId, visitor2.id, TimeLimit.create("17:00"), 1);
 
     const result = await getAllVisitorsUseCase.execute();
 

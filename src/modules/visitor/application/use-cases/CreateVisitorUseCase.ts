@@ -4,6 +4,7 @@ import { Visitor } from "../../domain/entities/Visitor";
 import { VisitorName } from "../../domain/value-objects/VisitorName";
 import { Document } from "../../domain/value-objects/Document";
 import { VehiclePlate } from "../../domain/value-objects/VehiclePlate";
+import { TimeLimit } from "../../domain/value-objects/TimeLimit";
 import { UniqueId } from "../../../../core/shared/value-objects/UniqueId";
 import { CreateVisitorDTO, VisitorResponseDTO } from "../dtos/VisitorDTOs";
 import { Result, success, failure } from "../../../../core/shared/Result";
@@ -35,6 +36,8 @@ export class CreateVisitorUseCase {
       const vehiclePlate = dto.vehicle_plate 
         ? VehiclePlate.create(dto.vehicle_plate) 
         : null;
+      const timeLimit = TimeLimit.create(dto.time_limit);
+      const daysValid = dto.days_valid || 1;
 
       const visitor = Visitor.create(name, document, vehiclePlate);
 
@@ -45,7 +48,9 @@ export class CreateVisitorUseCase {
 
       const residentVisitorResult = await this.visitorRepository.createResidentVisitor(
         residentId,
-        visitor.id
+        visitor.id,
+        timeLimit,
+        daysValid
       );
 
       if (residentVisitorResult.isFailure) {
@@ -61,8 +66,10 @@ export class CreateVisitorUseCase {
         vehicle_plate: visitor.vehiclePlate?.value || null,
         resident_id: resident.id.value,
         resident_unit_id: resident.unitId.value,
+        time_limit: residentVisitor.timeLimit.value,
         created_at: residentVisitor.createdAt,
         expires_at: residentVisitor.expiresAt,
+        can_enter_now: residentVisitor.canEnterNow(),
       };
 
       return success(visitorResponse);

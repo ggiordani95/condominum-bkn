@@ -1,9 +1,11 @@
 import { Entity } from "../../../../core/shared/Entity";
 import { UniqueId } from "../../../../core/shared/value-objects/UniqueId";
+import { TimeLimit } from "../value-objects/TimeLimit";
 
 export interface ResidentVisitorProps {
   residentId: UniqueId;
   visitorId: UniqueId;
+  timeLimit: TimeLimit;
   expiresAt: Date;
 }
 
@@ -20,14 +22,26 @@ export class ResidentVisitor extends Entity<ResidentVisitorProps> {
   public static create(
     residentId: UniqueId,
     visitorId: UniqueId,
+    timeLimit: TimeLimit,
+    daysValid: number = 1,
     id?: UniqueId
   ): ResidentVisitor {
+    if (daysValid < 1) {
+      throw new Error("Days valid must be at least 1");
+    }
+
+    if (daysValid > 30) {
+      throw new Error("Days valid cannot exceed 30 days");
+    }
+
     const expiresAt = new Date();
-    expiresAt.setHours(expiresAt.getHours() + 24);
+    expiresAt.setDate(expiresAt.getDate() + daysValid);
+    expiresAt.setHours(23, 59, 59, 999);
 
     const props: ResidentVisitorProps = {
       residentId,
       visitorId,
+      timeLimit,
       expiresAt,
     };
 
@@ -51,12 +65,24 @@ export class ResidentVisitor extends Entity<ResidentVisitorProps> {
     return this._props.visitorId;
   }
 
+  public get timeLimit(): TimeLimit {
+    return this._props.timeLimit;
+  }
+
   public get expiresAt(): Date {
     return this._props.expiresAt;
   }
 
   public isExpired(): boolean {
     return new Date() > this._props.expiresAt;
+  }
+
+  public canEnterNow(): boolean {
+    if (this.isExpired()) {
+      return false;
+    }
+
+    return !this._props.timeLimit.isBeforeNow();
   }
 
   public getRemainingTime(): number {
@@ -70,6 +96,7 @@ export class ResidentVisitor extends Entity<ResidentVisitorProps> {
       id: this._id.value,
       residentId: this._props.residentId.value,
       visitorId: this._props.visitorId.value,
+      timeLimit: this._props.timeLimit.value,
       createdAt: this._createdAt,
       expiresAt: this._props.expiresAt,
     };

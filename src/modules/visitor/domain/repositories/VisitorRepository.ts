@@ -1,6 +1,7 @@
 import { Visitor } from "../entities/Visitor";
 import { ResidentVisitor } from "../entities/ResidentVisitor";
 import { UniqueId } from "../../../../core/shared/value-objects/UniqueId";
+import { TimeLimit } from "../value-objects/TimeLimit";
 import { Result } from "../../../../core/shared/Result";
 
 export interface VisitorWithResident {
@@ -16,7 +17,9 @@ export interface VisitorRepository {
   findByIdWithResident(id: UniqueId): Promise<Result<VisitorWithResident | null>>;
   createResidentVisitor(
     residentId: UniqueId,
-    visitorId: UniqueId
+    visitorId: UniqueId,
+    timeLimit: TimeLimit,
+    daysValid?: number
   ): Promise<Result<ResidentVisitor>>;
   findActiveResidentVisitors(visitorId: UniqueId): Promise<Result<ResidentVisitor[]>>;
   deleteExpiredVisitors(): Promise<Result<void>>;

@@ -2,6 +2,7 @@ import { VisitorRepository, VisitorWithResident } from "../../domain/repositorie
 import { Visitor } from "../../domain/entities/Visitor";
 import { ResidentVisitor } from "../../domain/entities/ResidentVisitor";
 import { UniqueId } from "../../../../core/shared/value-objects/UniqueId";
+import { TimeLimit } from "../../domain/value-objects/TimeLimit";
 import { Result, success, failure } from "../../../../core/shared/Result";
 
 export class InMemoryVisitorRepository implements VisitorRepository {
@@ -70,9 +71,11 @@ export class InMemoryVisitorRepository implements VisitorRepository {
 
   async createResidentVisitor(
     residentId: UniqueId,
-    visitorId: UniqueId
+    visitorId: UniqueId,
+    timeLimit: TimeLimit,
+    daysValid: number = 1
   ): Promise<Result<ResidentVisitor>> {
-    const residentVisitor = ResidentVisitor.create(residentId, visitorId);
+    const residentVisitor = ResidentVisitor.create(residentId, visitorId, timeLimit, daysValid);
     this.residentVisitors.push(residentVisitor);
     return success(residentVisitor);
   }

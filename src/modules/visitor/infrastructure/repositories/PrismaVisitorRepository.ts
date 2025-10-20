@@ -5,6 +5,7 @@ import { UniqueId } from "../../../../core/shared/value-objects/UniqueId";
 import { VisitorName } from "../../domain/value-objects/VisitorName";
 import { Document } from "../../domain/value-objects/Document";
 import { VehiclePlate } from "../../domain/value-objects/VehiclePlate";
+import { TimeLimit } from "../../domain/value-objects/TimeLimit";
 import { Result, success, failure } from "../../../../core/shared/Result";
 import { prisma } from "../../../../main/database/adapter";
 import { UserName } from "../../../user/domain/value-objects/UserName";
@@ -121,13 +122,14 @@ export class PrismaVisitorRepository implements VisitorRepository {
           {
             residentId: UniqueId.create(rv.residentId),
             visitorId: UniqueId.create(rv.visitorId),
+            timeLimit: TimeLimit.create(rv.timeLimit),
             expiresAt: rv.expiresAt,
           },
           UniqueId.create(rv.id),
           rv.createdAt,
           rv.expiresAt
         ),
-        residentName: rv.resident.name,
+        residentUnitId: rv.resident.unitId,
       }));
 
       return success(result);
@@ -177,13 +179,14 @@ export class PrismaVisitorRepository implements VisitorRepository {
           {
             residentId: UniqueId.create(residentVisitor.residentId),
             visitorId: UniqueId.create(residentVisitor.visitorId),
+            timeLimit: TimeLimit.create(residentVisitor.timeLimit),
             expiresAt: residentVisitor.expiresAt,
           },
           UniqueId.create(residentVisitor.id),
           residentVisitor.createdAt,
           residentVisitor.expiresAt
         ),
-        residentName: residentVisitor.resident.name,
+        residentUnitId: residentVisitor.resident.unitId,
       };
 
       return success(result);
@@ -194,16 +197,19 @@ export class PrismaVisitorRepository implements VisitorRepository {
 
   async createResidentVisitor(
     residentId: UniqueId,
-    visitorId: UniqueId
+    visitorId: UniqueId,
+    timeLimit: TimeLimit,
+    daysValid: number = 1
   ): Promise<Result<ResidentVisitor>> {
     try {
-      const residentVisitor = ResidentVisitor.create(residentId, visitorId);
+      const residentVisitor = ResidentVisitor.create(residentId, visitorId, timeLimit, daysValid);
 
       const savedResidentVisitor = await this.prisma.residentVisitor.create({
         data: {
           id: residentVisitor.id.value,
           residentId: residentVisitor.residentId.value,
           visitorId: residentVisitor.visitorId.value,
+          timeLimit: residentVisitor.timeLimit.value,
           createdAt: residentVisitor.createdAt,
           expiresAt: residentVisitor.expiresAt,
         },
@@ -213,6 +219,7 @@ export class PrismaVisitorRepository implements VisitorRepository {
         {
           residentId: UniqueId.create(savedResidentVisitor.residentId),
           visitorId: UniqueId.create(savedResidentVisitor.visitorId),
+          timeLimit: TimeLimit.create(savedResidentVisitor.timeLimit),
           expiresAt: savedResidentVisitor.expiresAt,
         },
         UniqueId.create(savedResidentVisitor.id),
@@ -244,6 +251,7 @@ export class PrismaVisitorRepository implements VisitorRepository {
           {
             residentId: UniqueId.create(rv.residentId),
             visitorId: UniqueId.create(rv.visitorId),
+            timeLimit: TimeLimit.create(rv.timeLimit),
             expiresAt: rv.expiresAt,
           },
           UniqueId.create(rv.id),

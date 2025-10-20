@@ -34,6 +34,7 @@ describe("CreateVisitorUseCase", () => {
       document: "12345678900",
       vehicle_plate: "ABC-1234",
       resident_id: testResident.id.value,
+      time_limit: "18:00",
     };
 
     const result = await createVisitorUseCase.execute(dto);
@@ -58,6 +59,7 @@ describe("CreateVisitorUseCase", () => {
       name: "Maria Visitante",
       document: "98765432100",
       resident_id: testResident.id.value,
+      time_limit: "20:00",
     };
 
     const result = await createVisitorUseCase.execute(dto);
@@ -73,6 +75,7 @@ describe("CreateVisitorUseCase", () => {
       name: "Pedro Visitante",
       document: "123.456.789-00",
       resident_id: testResident.id.value,
+      time_limit: "17:00",
     };
 
     const result = await createVisitorUseCase.execute(dto);
@@ -88,6 +91,7 @@ describe("CreateVisitorUseCase", () => {
       name: "João Visitante",
       document: "12345678900",
       resident_id: "id-invalido",
+      time_limit: "18:00",
     };
 
     const result = await createVisitorUseCase.execute(dto);
@@ -103,6 +107,7 @@ describe("CreateVisitorUseCase", () => {
       name: "Jo",
       document: "12345678900",
       resident_id: testResident.id.value,
+      time_limit: "18:00",
     };
 
     const result = await createVisitorUseCase.execute(dto);
@@ -118,6 +123,7 @@ describe("CreateVisitorUseCase", () => {
       name: "João Visitante",
       document: "123",
       resident_id: testResident.id.value,
+      time_limit: "18:00",
     };
 
     const result = await createVisitorUseCase.execute(dto);
@@ -134,6 +140,7 @@ describe("CreateVisitorUseCase", () => {
       document: "12345678900",
       vehicle_plate: "INVALIDA",
       resident_id: testResident.id.value,
+      time_limit: "18:00",
     };
 
     const result = await createVisitorUseCase.execute(dto);
@@ -144,26 +151,28 @@ describe("CreateVisitorUseCase", () => {
     }
   });
 
-  it("deve definir expiração para 24 horas no futuro", async () => {
+  it("deve definir expiração para 1 dia no futuro (23:59:59)", async () => {
     const dto: CreateVisitorDTO = {
       name: "João Visitante",
       document: "12345678900",
       resident_id: testResident.id.value,
+      time_limit: "18:00",
+      days_valid: 1,
     };
 
     const beforeCreation = new Date();
     const result = await createVisitorUseCase.execute(dto);
-    const afterCreation = new Date();
 
     expect(result.isSuccess).toBe(true);
     if (result.isSuccess) {
       const expiresAt = new Date(result.value.expires_at);
-      const expectedExpiry = new Date(beforeCreation);
-      expectedExpiry.setHours(expectedExpiry.getHours() + 24);
-
-      const diffHours = (expiresAt.getTime() - beforeCreation.getTime()) / (1000 * 60 * 60);
-      expect(diffHours).toBeGreaterThanOrEqual(23.99);
-      expect(diffHours).toBeLessThanOrEqual(24.01);
+      
+      expect(expiresAt.getHours()).toBe(23);
+      expect(expiresAt.getMinutes()).toBe(59);
+      expect(expiresAt.getSeconds()).toBe(59);
+      
+      const daysDiff = Math.floor((expiresAt.getTime() - beforeCreation.getTime()) / (1000 * 60 * 60 * 24));
+      expect(daysDiff).toBe(1);
     }
   });
 });

@@ -136,6 +136,7 @@ model ResidentVisitor {
   id         String   @id @default(uuid())
   residentId String   @map("resident_id")
   visitorId  String   @map("visitor_id")
+  timeLimit  String   @map("time_limit")
   createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   expiresAt  DateTime @map("expires_at") @db.Timestamptz(6)
 

@@ -5,6 +5,7 @@ import { Visitor } from "../../../domain/entities/Visitor";
 import { VisitorName } from "../../../domain/value-objects/VisitorName";
 import { Document } from "../../../domain/value-objects/Document";
 import { VehiclePlate } from "../../../domain/value-objects/VehiclePlate";
+import { TimeLimit } from "../../../domain/value-objects/TimeLimit";
 import { UniqueId } from "../../../../../core/shared/value-objects/UniqueId";
 
 describe("GetVisitorByIdUseCase", () => {
@@ -27,7 +28,7 @@ describe("GetVisitorByIdUseCase", () => {
       VehiclePlate.create("ABC-1234")
     );
     await visitorRepository.save(visitor);
-    await visitorRepository.createResidentVisitor(residentId, visitor.id);
+    await visitorRepository.createResidentVisitor(residentId, visitor.id, TimeLimit.create("18:00"), 1);
 
     const result = await getVisitorByIdUseCase.execute(visitor.id.value);
 
@@ -62,7 +63,7 @@ describe("GetVisitorByIdUseCase", () => {
       null
     );
     await visitorRepository.save(visitor);
-    await visitorRepository.createResidentVisitor(residentId, visitor.id);
+    await visitorRepository.createResidentVisitor(residentId, visitor.id, TimeLimit.create("19:00"), 1);
 
     const result = await getVisitorByIdUseCase.execute(visitor.id.value);
 
@@ -83,7 +84,7 @@ describe("GetVisitorByIdUseCase", () => {
       null
     );
     await visitorRepository.save(visitor);
-    const rvResult = await visitorRepository.createResidentVisitor(residentId, visitor.id);
+    const rvResult = await visitorRepository.createResidentVisitor(residentId, visitor.id, TimeLimit.create("17:00"), 1);
 
     const result = await getVisitorByIdUseCase.execute(visitor.id.value);
 
@@ -106,7 +107,7 @@ describe("GetVisitorByIdUseCase", () => {
     );
     await visitorRepository.save(visitor);
     
-    const expiredRV = await visitorRepository.createResidentVisitor(residentId, visitor.id);
+    const expiredRV = await visitorRepository.createResidentVisitor(residentId, visitor.id, TimeLimit.create("16:00"), 1);
     if (expiredRV.isSuccess) {
       const rv = expiredRV.value;
       (rv as any)._props.expiresAt = new Date(Date.now() - 1000); 
