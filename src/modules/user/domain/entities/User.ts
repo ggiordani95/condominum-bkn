@@ -16,9 +16,10 @@ export class User extends Entity<UserProps> {
     props: UserProps,
     id?: UniqueId,
     createdAt?: Date,
-    updatedAt?: Date
+    updatedAt?: Date,
+    deletedAt?: Date | null
   ) {
-    super(props, id, createdAt, updatedAt);
+    super(props, id, createdAt, updatedAt, deletedAt);
   }
 
   public static create(
@@ -41,12 +42,13 @@ export class User extends Entity<UserProps> {
     props: UserProps,
     id: UniqueId,
     createdAt: Date,
-    updatedAt: Date
+    updatedAt: Date,
+    deletedAt?: Date | null
   ): User {
-    return new User(props, id, createdAt, updatedAt);
+    return new User(props, id, createdAt, updatedAt, deletedAt);
   }
 
-  // Getters
+  
   public get name(): UserName {
     return this._props.name;
   }

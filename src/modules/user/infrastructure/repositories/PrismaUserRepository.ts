@@ -17,6 +17,7 @@ export class PrismaUserRepository implements UserRepository {
         email: user.email.value,
         password: user.password.value,
         isActive: user.isActive,
+        deletedAt: user.deletedAt,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       };
@@ -34,6 +35,7 @@ export class PrismaUserRepository implements UserRepository {
             email: userData.email,
             password: userData.password,
             isActive: userData.isActive,
+            deletedAt: userData.deletedAt,
             updatedAt: userData.updatedAt,
           },
         });
@@ -52,7 +54,8 @@ export class PrismaUserRepository implements UserRepository {
         },
         UniqueId.create(savedUser.id),
         savedUser.createdAt,
-        savedUser.updatedAt
+        savedUser.updatedAt,
+        savedUser.deletedAt
       );
 
       return success(domainUser);
@@ -63,8 +66,11 @@ export class PrismaUserRepository implements UserRepository {
 
   async findById(id: UniqueId): Promise<Result<User | null>> {
     try {
-      const userData = await this.prisma.user.findUnique({
-        where: { id: id.value },
+      const userData = await this.prisma.user.findFirst({
+        where: { 
+          id: id.value,
+          deletedAt: null
+        },
       });
 
       if (!userData) {
@@ -80,7 +86,8 @@ export class PrismaUserRepository implements UserRepository {
         },
         UniqueId.create(userData.id),
         userData.createdAt,
-        userData.updatedAt
+        userData.updatedAt,
+        userData.deletedAt
       );
 
       return success(domainUser);
@@ -91,8 +98,11 @@ export class PrismaUserRepository implements UserRepository {
 
   async findByEmail(email: Email): Promise<Result<User | null>> {
     try {
-      const userData = await this.prisma.user.findUnique({
-        where: { email: email.value },
+      const userData = await this.prisma.user.findFirst({
+        where: { 
+          email: email.value,
+          deletedAt: null
+        },
       });
 
       if (!userData) {
@@ -108,7 +118,8 @@ export class PrismaUserRepository implements UserRepository {
         },
         UniqueId.create(userData.id),
         userData.createdAt,
-        userData.updatedAt
+        userData.updatedAt,
+        userData.deletedAt
       );
 
       return success(domainUser);
@@ -133,11 +144,12 @@ export class PrismaUserRepository implements UserRepository {
 
       const [users, total] = await Promise.all([
         this.prisma.user.findMany({
+          where: { deletedAt: null },
           skip,
           take: limit,
           orderBy: { createdAt: "desc" },
         }),
-        this.prisma.user.count(),
+        this.prisma.user.count({ where: { deletedAt: null } }),
       ]);
 
       const domainUsers = users.map((userData) =>
@@ -150,7 +162,8 @@ export class PrismaUserRepository implements UserRepository {
           },
           UniqueId.create(userData.id),
           userData.createdAt,
-          userData.updatedAt
+          userData.updatedAt,
+          userData.deletedAt
         )
       );
 
@@ -167,8 +180,9 @@ export class PrismaUserRepository implements UserRepository {
 
   async delete(id: UniqueId): Promise<Result<void>> {
     try {
-      await this.prisma.user.delete({
+      await this.prisma.user.update({
         where: { id: id.value },
+        data: { deletedAt: new Date() }
       });
       return success(undefined);
     } catch (error) {
@@ -178,8 +192,11 @@ export class PrismaUserRepository implements UserRepository {
 
   async exists(email: Email): Promise<Result<boolean>> {
     try {
-      const user = await this.prisma.user.findUnique({
-        where: { email: email.value },
+      const user = await this.prisma.user.findFirst({
+        where: { 
+          email: email.value,
+          deletedAt: null
+        },
         select: { id: true },
       });
       return success(!!user);

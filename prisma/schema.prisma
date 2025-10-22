@@ -32,6 +32,7 @@ model User {
   password     String
   name         String
   isActive     Boolean   @default(true) @map("is_active")
+  deletedAt    DateTime? @map("deleted_at") @db.Timestamptz(6)
   lastLoginAt  DateTime? @map("last_login_at") @db.Timestamptz(6)
   createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -40,6 +41,7 @@ model User {
   residents   Resident[]
 
   @@index([email, isActive], name: "idx_users_email_status")
+  @@index([deletedAt], name: "idx_users_deleted")
   @@map("users")
 }
 
@@ -100,13 +102,14 @@ model Unit {
 }
 
 model Resident {
-  id        String   @id @default(uuid())
-  userId    String   @map("user_id")
-  unitId    String   @map("unit_id")
-  role      String   @default("owner")
-  isActive  Boolean  @default(true) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  id        String    @id @default(uuid())
+  userId    String    @map("user_id")
+  unitId    String    @map("unit_id")
+  role      String    @default("owner")
+  isActive  Boolean   @default(true) @map("is_active")
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   unit             Unit              @relation(fields: [unitId], references: [id], onDelete: Cascade)
@@ -115,20 +118,23 @@ model Resident {
   @@unique([userId], name: "residents_user_id_key")
   @@index([userId], name: "idx_residents_user")
   @@index([unitId], name: "idx_residents_unit")
+  @@index([deletedAt], name: "idx_residents_deleted")
   @@map("residents")
 }
 
 model Visitor {
-  id           String   @id @default(uuid())
+  id           String    @id @default(uuid())
   name         String
   document     String
-  vehiclePlate String?  @map("vehicle_plate")
-  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  vehiclePlate String?   @map("vehicle_plate")
+  deletedAt    DateTime? @map("deleted_at") @db.Timestamptz(6)
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   residentVisitors ResidentVisitor[]
 
   @@index([document], name: "idx_visitors_document")
+  @@index([deletedAt], name: "idx_visitors_deleted")
   @@map("visitors")
 }
 

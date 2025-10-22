@@ -20,7 +20,10 @@ export class InMemoryUserRepository implements UserRepository {
 
   async findById(id: UniqueId): Promise<Result<User | null>> {
     try {
-      const user = this.users.get(id.value) || null;
+      const user = this.users.get(id.value);
+      if (!user || user.isDeleted()) {
+        return success(null);
+      }
       return success(user);
     } catch (error) {
       return failure(error as Error);
@@ -29,9 +32,9 @@ export class InMemoryUserRepository implements UserRepository {
 
   async findByEmail(email: Email): Promise<Result<User | null>> {
     try {
-      const user =
-        Array.from(this.users.values()).find((u) => u.email.equals(email)) ||
-        null;
+      const user = Array.from(this.users.values()).find(
+        (u) => u.email.equals(email) && !u.isDeleted()
+      ) || null;
       return success(user);
     } catch (error) {
       return failure(error as Error);
@@ -50,7 +53,7 @@ export class InMemoryUserRepository implements UserRepository {
     }>
   > {
     try {
-      const allUsers = Array.from(this.users.values());
+      const allUsers = Array.from(this.users.values()).filter(u => !u.isDeleted());
       const total = allUsers.length;
       const startIndex = (page - 1) * limit;
       const endIndex = startIndex + limit;
@@ -69,7 +72,10 @@ export class InMemoryUserRepository implements UserRepository {
 
   async delete(id: UniqueId): Promise<Result<void>> {
     try {
-      this.users.delete(id.value);
+      const user = this.users.get(id.value);
+      if (user) {
+        user.softDelete();
+      }
       return success(undefined);
     } catch (error) {
       return failure(error as Error);
@@ -79,7 +85,7 @@ export class InMemoryUserRepository implements UserRepository {
   async exists(email: Email): Promise<Result<boolean>> {
     try {
       const user = Array.from(this.users.values()).find((u) =>
-        u.email.equals(email)
+        u.email.equals(email) && !u.isDeleted()
       );
       return success(!!user);
     } catch (error) {

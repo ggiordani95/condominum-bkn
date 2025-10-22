@@ -1,4 +1,3 @@
-  
 import { UserRepository } from "../../domain/repositories/UserRepository";
 import { UniqueId } from "../../../../core/shared/value-objects/UniqueId";
 import { Result, success, failure } from "../../../../core/shared/Result";
@@ -21,9 +20,15 @@ export class DeleteUserUseCase {
         return failure(new ValidationError("Usuário não encontrado"));
       }
 
-      const deleteResult = await this.userRepository.delete(id);
-      if (deleteResult.isFailure) {
-        return failure(deleteResult.error);
+      if (user.isDeleted()) {
+        return failure(new ValidationError("Usuário já foi deletado"));
+      }
+
+      user.softDelete();
+
+      const saveResult = await this.userRepository.save(user);
+      if (saveResult.isFailure) {
+        return failure(saveResult.error);
       }
 
       return success(undefined);
